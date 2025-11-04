@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCAT Study Schedule Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .deadline-info {
+            text-align: center;
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #ffe6e6;
+            border-radius: 10px;
+        }
+
+        .study-requirements {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .study-requirements h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .requirement-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .requirement-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .input-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-section .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        input[type="number"]:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .daily-log-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .daily-log-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .day-input-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .day-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-remove {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 8px 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .results {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .results h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .result-card h4 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .result-card .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .timeline {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .timeline h3 {
+            margin-bottom: 15px;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .save-note {
+            text-align: center;
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .day-input-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 MCAT Study Schedule Calculator</h1>
+        
+        <div class="input-section">
+            <h3>📅 Study Timeline</h3>
+            <div class="input-group">
+                <label for="startDate">Start Study Date:</label>
+                <input type="date" id="startDate" onchange="saveData(); updateDaysRemaining()">
+            </div>
+            <div class="input-group">
+                <label for="testDate">Test Date:</label>
+                <input type="date" id="testDate" onchange="saveData(); updateDaysRemaining()">
+            </div>
+        </div>
+
+        <div class="deadline-info">
+            <div id="testDateDisplay">Target Test Date: Not set</div>
+            <div id="daysRemaining">Set your dates above</div>
+        </div>
+
+        <div class="input-section">
+            <h3>📝 Study Materials</h3>
+            <div class="requirements-grid" style="gap: 15px;">
+                <div class="input-group">
+                    <label for="numTests">Number of Practice Tests:</label>
+                    <input type="number" id="numTests" min="1" max="50" value="14" onchange="saveData(); updateRequirements()">
+                </div>
+                <div class="input-group">
+                    <label for="hoursPerTest">Hours per Test:</label>
+                    <input type="number" id="hoursPerTest" min="0.5" max="24" step="0.5" value="7.5" onchange="saveData(); updateRequirements()">
+                </div>
+                <div class="input-group">
+                    <label for="totalQuestions">Total Questions:</label>
+                    <input type="number" id="totalQuestions" min="1" max="10000" value="3600" onchange="saveData(); updateRequirements()">
+                </div>
+                <div class="input-group">
+                    <label for="questionsPerSet">Questions per Set:</label>
+                    <input type="number" id="questionsPerSet" min="1" max="200" value="59" onchange="saveData(); updateRequirements()">
+                </div>
+                <div class="input-group">
+                    <label for="hoursPerSet">Hours per Question Set:</label>
+                    <input type="number" id="hoursPerSet" min="0.5" max="24" step="0.5" value="3.5" onchange="saveData(); updateRequirements()">
+                </div>
+            </div>
+        </div>
+
+        <div class="study-requirements">
+            <h3>📚 Study Requirements</h3>
+            <div class="requirements-grid" id="requirementsDisplay">
+                <div class="requirement-item">
+                    <strong>Practice Tests</strong>
+                    <div id="testHours">14 tests × 7.5 hours = 105 hours</div>
+                </div>
+                <div class="requirement-item">
+                    <strong>Question Sets</strong>
+                    <div id="questionSets">3,600 questions ÷ 59 = 61 sets</div>
+                    <div id="questionHours">61 sets × 3.5 hours = 213.5 hours</div>
+                </div>
+                <div class="requirement-item">
+                    <strong>Total Study Time</strong>
+                    <div id="totalHours">318.5 hours needed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <h3>⚙️ Default Daily Study Time</h3>
+            <div class="input-group">
+                <label for="defaultStudyHours">Default hours per day:</label>
+                <input type="number" id="defaultStudyHours" min="0" max="24" step="0.5" value="8" placeholder="Enter hours" onchange="saveData()">
+            </div>
+        </div>
+
+        <div class="daily-log-section">
+            <h3>📅 Adjust Specific Days (Optional)</h3>
+            <p style="margin-bottom: 15px; color: #6c757d;">Add days where you'll study more or less than your default hours</p>
+            <div id="dailyLogContainer"></div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="addDayInput()">+ Add Day Adjustment</button>
+                <button class="btn btn-secondary" onclick="clearAllData()">Clear All Data</button>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%; font-size: 18px;" onclick="calculateSchedule()">
+            📊 Calculate Schedule
+        </button>
+        
+        <div class="save-note" id="saveNote" style="display: none;">✓ Data saved automatically</div>
+
+        <div id="results" class="results hidden">
+            <h2>📈 Your Study Plan</h2>
+            <div class="result-grid">
+                <div class="result-card">
+                    <h4>Days Until Test</h4>
+                    <div class="value" id="totalDays">-</div>
+                </div>
+                <div class="result-card">
+                    <h4>Total Study Hours</h4>
+                    <div class="value" id="totalHours">-</div>
+                </div>
+                <div class="result-card">
+                    <h4>Hours Per Day Needed</h4>
+                    <div class="value" id="hoursPerDay">-</div>
+                </div>
+                <div class="result-card">
+                    <h4>Completion Date</h4>
+                    <div class="value" id="completionDate">-</div>
+                </div>
+            </div>
+            
+            <div class="timeline">
+                <h3>📅 Timeline Breakdown</h3>
+                <div id="timelineDetails"></div>
+            </div>
+
+            <div id="statusMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        let dayCounter = 1;
+
+        // Get dates from inputs
+        function getStartDate() {
+            const input = document.getElementById('startDate').value;
+            return input ? new Date(input) : null;
+        }
+
+        function getTestDate() {
+            const input = document.getElementById('testDate').value;
+            return input ? new Date(input) : null;
+        }
+
+        // Get study parameters
+        function getStudyParams() {
+            return {
+                numTests: parseInt(document.getElementById('numTests').value) || 0,
+                hoursPerTest: parseFloat(document.getElementById('hoursPerTest').value) || 0,
+                totalQuestions: parseInt(document.getElementById('totalQuestions').value) || 0,
+                questionsPerSet: parseInt(document.getElementById('questionsPerSet').value) || 1,
+                hoursPerSet: parseFloat(document.getElementById('hoursPerSet').value) || 0
+            };
+        }
+
+        function calculateTotalHours() {
+            const params = getStudyParams();
+            const testHours = params.numTests * params.hoursPerTest;
+            const numSets = Math.ceil(params.totalQuestions / params.questionsPerSet);
+            const questionHours = numSets * params.hoursPerSet;
+            return testHours + questionHours;
+        }
+
+        // Update requirements display
+        function updateRequirements() {
+            const params = getStudyParams();
+            const testHours = params.numTests * params.hoursPerTest;
+            const numSets = Math.ceil(params.totalQuestions / params.questionsPerSet);
+            const questionHours = numSets * params.hoursPerSet;
+            const totalHours = testHours + questionHours;
+
+            document.getElementById('testHours').textContent = 
+                `${params.numTests} tests × ${params.hoursPerTest} hours = ${testHours.toFixed(1)} hours`;
+            
+            document.getElementById('questionSets').textContent = 
+                `${params.totalQuestions.toLocaleString()} questions ÷ ${params.questionsPerSet} = ${numSets} sets`;
+            
+            document.getElementById('questionHours').textContent = 
+                `${numSets} sets × ${params.hoursPerSet} hours = ${questionHours.toFixed(1)} hours`;
+            
+            document.getElementById('totalHours').textContent = 
+                `${totalHours.toFixed(1)} hours needed`;
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                startDate: document.getElementById('startDate').value,
+                testDate: document.getElementById('testDate').value,
+                numTests: document.getElementById('numTests').value,
+                hoursPerTest: document.getElementById('hoursPerTest').value,
+                totalQuestions: document.getElementById('totalQuestions').value,
+                questionsPerSet: document.getElementById('questionsPerSet').value,
+                hoursPerSet: document.getElementById('hoursPerSet').value,
+                defaultStudyHours: document.getElementById('defaultStudyHours').value,
+                dayCounter: dayCounter
+            };
+
+            const rows = document.querySelectorAll('.day-input-row');
+            const dayAdjustments = [];
+            
+            rows.forEach(row => {
+                const date = row.querySelector('.day-date').value;
+                const hours = row.querySelector('.day-hours').value;
+                if (date && hours) {
+                    dayAdjustments.push({ date, hours });
+                }
+            });
+
+            data.dayAdjustments = dayAdjustments;
+            localStorage.setItem('mcatScheduleData', JSON.stringify(data));
+            
+            showSaveNote();
+        }
+
+        function showSaveNote() {
+            const note = document.getElementById('saveNote');
+            note.style.display = 'block';
+            setTimeout(() => {
+                note.style.display = 'none';
+            }, 2000);
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('mcatScheduleData');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                // Load dates
+                if (data.startDate) document.getElementById('startDate').value = data.startDate;
+                if (data.testDate) document.getElementById('testDate').value = data.testDate;
+                
+                // Load study parameters
+                if (data.numTests) document.getElementById('numTests').value = data.numTests;
+                if (data.hoursPerTest) document.getElementById('hoursPerTest').value = data.hoursPerTest;
+                if (data.totalQuestions) document.getElementById('totalQuestions').value = data.totalQuestions;
+                if (data.questionsPerSet) document.getElementById('questionsPerSet').value = data.questionsPerSet;
+                if (data.hoursPerSet) document.getElementById('hoursPerSet').value = data.hoursPerSet;
+                if (data.defaultStudyHours) document.getElementById('defaultStudyHours').value = data.defaultStudyHours;
+                
+                // Load day counter
+                if (data.dayCounter) dayCounter = data.dayCounter;
+                
+                // Load day adjustments
+                if (data.dayAdjustments && data.dayAdjustments.length > 0) {
+                    data.dayAdjustments.forEach(adj => {
+                        addDayInput(adj.date, adj.hours);
+                    });
+                }
+            } else {
+                // Set default dates if no saved data
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const testDate = new Date('2026-01-15');
+                
+                document.getElementById('startDate').value = tomorrow.toISOString().split('T')[0];
+                document.getElementById('testDate').value = testDate.toISOString().split('T')[0];
+            }
+            
+            updateRequirements();
+            updateDaysRemaining();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all your saved data?')) {
+                localStorage.removeItem('mcatScheduleData');
+                location.reload();
+            }
+        }
+
+        function updateDaysRemaining() {
+            const startDate = getStartDate();
+            const testDate = getTestDate();
+            
+            if (!testDate) {
+                document.getElementById('testDateDisplay').textContent = 'Target Test Date: Not set';
+                document.getElementById('daysRemaining').textContent = 'Set your dates above';
+                return;
+            }
+            
+            document.getElementById('testDateDisplay').textContent = 
+                `Target Test Date: ${testDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+            
+            const today = new Date();
+            const diffTime = testDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) {
+                document.getElementById('daysRemaining').textContent = 'Test date has passed';
+            } else {
+                document.getElementById('daysRemaining').textContent = `${diffDays} days remaining`;
+            }
+        }
+
+        function addDayInput(savedDate = '', savedHours = '') {
+            const container = document.getElementById('dailyLogContainer');
+            const row = document.createElement('div');
+            row.className = 'day-input-row';
+            
+            const startDate = getStartDate();
+            const testDate = getTestDate();
+            const minDate = startDate ? startDate.toISOString().split('T')[0] : '';
+            const maxDate = testDate ? testDate.toISOString().split('T')[0] : '';
+            
+            row.innerHTML = `
+                <div class="day-label">Day ${dayCounter}</div>
+                <input type="date" class="day-date" min="${minDate}" max="${maxDate}" value="${savedDate}" onchange="saveData()" required>
+                <input type="number" class="day-hours" min="0" max="24" step="0.5" value="${savedHours}" placeholder="Hours studied" onchange="saveData()" required>
+                <button class="btn btn-remove" onclick="removeDay(this)">Remove</button>
+            `;
+            container.appendChild(row);
+            dayCounter++;
+            if (!savedDate) saveData();
+        }
+
+        function removeDay(button) {
+            button.parentElement.remove();
+            saveData();
+        }
+
+        function calculateSchedule() {
+            const startDate = getStartDate();
+            const testDate = getTestDate();
+            
+            if (!startDate || !testDate) {
+                alert('Please set both start date and test date before calculating.');
+                return;
+            }
+            
+            if (startDate >= testDate) {
+                alert('Start date must be before test date.');
+                return;
+            }
+            
+            const TOTAL_STUDY_HOURS = calculateTotalHours();
+            const params = getStudyParams();
+            const defaultHours = parseFloat(document.getElementById('defaultStudyHours').value) || 0;
+            
+            // Collect all day adjustments
+            const dayAdjustments = [];
+            const rows = document.querySelectorAll('.day-input-row');
+            rows.forEach(row => {
+                const date = row.querySelector('.day-date').value;
+                const hours = parseFloat(row.querySelector('.day-hours').value);
+                if (date && !isNaN(hours)) {
+                    dayAdjustments.push({ date: new Date(date), hours: hours });
+                }
+            });
+
+            // Sort adjustments by date
+            dayAdjustments.sort((a, b) => a.date - b.date);
+
+            // Calculate total available study hours
+            let currentDate = new Date(startDate);
+            let totalAvailableHours = 0;
+            const dailySchedule = [];
+
+            while (currentDate <= testDate) {
+                const dateStr = currentDate.toISOString().split('T')[0];
+                const adjustment = dayAdjustments.find(adj => adj.date.toISOString().split('T')[0] === dateStr);
+                const hoursForDay = adjustment ? adjustment.hours : defaultHours;
+                
+                totalAvailableHours += hoursForDay;
+                dailySchedule.push({
+                    date: new Date(currentDate),
+                    hours: hoursForDay,
+                    cumulativeHours: totalAvailableHours
+                });
+
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // Find completion date
+            let completionDate = null;
+            let hoursAccumulated = 0;
+            let daysToComplete = 0;
+
+            for (let day of dailySchedule) {
+                hoursAccumulated += day.hours;
+                daysToComplete++;
+                if (hoursAccumulated >= TOTAL_STUDY_HOURS) {
+                    completionDate = day.date;
+                    break;
+                }
+            }
+
+            // Calculate statistics
+            const totalDays = Math.ceil((testDate - startDate) / (1000 * 60 * 60 * 24));
+            const avgHoursNeeded = TOTAL_STUDY_HOURS / totalDays;
+
+            // Display results
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('totalDays').textContent = totalDays;
+            document.getElementById('totalHours').textContent = totalAvailableHours.toFixed(1) + 'h';
+            document.getElementById('hoursPerDay').textContent = (totalAvailableHours / totalDays).toFixed(1) + 'h';
+            
+            if (completionDate) {
+                document.getElementById('completionDate').textContent = completionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            } else {
+                document.getElementById('completionDate').textContent = 'Not possible';
+            }
+
+            // Timeline details
+            const numSets = Math.ceil(params.totalQuestions / params.questionsPerSet);
+            const testHours = params.numTests * params.hoursPerTest;
+            const questionHours = numSets * params.hoursPerSet;
+            
+            const timelineDetails = document.getElementById('timelineDetails');
+            timelineDetails.innerHTML = `
+                <p><strong>Study Requirements:</strong></p>
+                <p>• ${params.numTests} practice tests (${testHours.toFixed(1)} hours)</p>
+                <p>• ${numSets} question sets (${questionHours.toFixed(1)} hours)</p>
+                <p>• <strong>Total: ${TOTAL_STUDY_HOURS.toFixed(1)} hours needed</strong></p>
+                <br>
+                <p><strong>Your Schedule:</strong></p>
+                <p>• Available hours: ${totalAvailableHours.toFixed(1)} hours</p>
+                <p>• Average per day: ${(totalAvailableHours / totalDays).toFixed(1)} hours</p>
+                <p>• Days with adjustments: ${dayAdjustments.length}</p>
+            `;
+
+            // Status message
+            const statusDiv = document.getElementById('statusMessage');
+            if (!completionDate) {
+                statusDiv.className = 'status-message status-danger';
+                statusDiv.innerHTML = `⚠️ <strong>Not Enough Time!</strong><br>You need ${TOTAL_STUDY_HOURS.toFixed(1)} hours but only have ${totalAvailableHours.toFixed(1)} hours scheduled.<br>Increase your daily study hours by ${((TOTAL_STUDY_HOURS - totalAvailableHours) / totalDays).toFixed(1)} hours per day.`;
+            } else if (completionDate > testDate) {
+                statusDiv.className = 'status-message status-danger';
+                statusDiv.innerHTML = `⚠️ <strong>You'll finish after the deadline!</strong><br>Completion date: ${completionDate.toLocaleDateString()}<br>You need to increase your daily study hours.`;
+            } else if (completionDate.toDateString() === testDate.toDateString()) {
+                statusDiv.className = 'status-message status-warning';
+                statusDiv.innerHTML = `⚡ <strong>Cutting it close!</strong><br>You'll finish exactly on the deadline. Consider adding buffer time.`;
+            } else {
+                const daysEarly = Math.ceil((testDate - completionDate) / (1000 * 60 * 60 * 24));
+                statusDiv.className = 'status-message status-success';
+                statusDiv.innerHTML = `✅ <strong>You're on track!</strong><br>You'll complete ${daysEarly} days before the test with time to spare for review.`;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            loadData();
+            setInterval(updateDaysRemaining, 60000); // Update every minute
+        });
+    </script>
+</body>
+</html>
